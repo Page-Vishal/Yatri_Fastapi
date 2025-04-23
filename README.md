@@ -29,6 +29,11 @@ Then start the FastAPI server:
 ```bash
 uvicorn main:app --reload
 ```
+Also, add the .env file at [here](./Code/Assets)
+```
+GROQ_API_KEY='API_KEY'
+pgsql="postgresql://A:B@C:D/db_phone"
+```
 
 Visit the interactive API docs at:
 ➡️ http://127.0.0.1:8000/docs
