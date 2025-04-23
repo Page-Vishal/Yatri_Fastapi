@@ -32,7 +32,7 @@ uvicorn main:app --reload
 Also, add the .env file at [here](./Code/Assets)
 ```
 GROQ_API_KEY='API_KEY'
-pgsql="postgresql://A:B@C:D/db_phone"
+pgsql=postgresql://A:B@C:D/db_phone
 ```
 
 Visit the interactive API docs at:
