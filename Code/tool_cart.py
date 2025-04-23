@@ -10,8 +10,6 @@ MODEL = "llama-3.3-70b-versatile"
 
 db = SQLDatabase.from_uri(os.getenv('pgsql'))
 schema = db.get_table_info(["tbl_cart"])
-chat_history = {}
-
 
 def get_product_id(question):
     schema = db.get_table_info(["tbl_phones","tbl_accessories"])
@@ -49,6 +47,9 @@ def cart_query(question):
 
     user_id = get_user_id(0)
     prod_id = get_product_id(question)
+    chat_hist = chat_history()
+    print(chat_hist)
+    add_history('user',question)
     user_prompt= f"""
         You help users add, remove or view from their cart.
         You have to perform:
@@ -58,14 +59,15 @@ def cart_query(question):
 
         cart_id:  cart_{user_id}
         <SCHEMA>{schema}</SCHEMA>
-        CONVERSATION HISTORY: {chat_history}
+        CONVERSATION HISTORY: {chat_hist}
         user_id: {user_id}
         product_id and price per unit: {prod_id}
 
-        You use question: {question} to determine user's intent and what operation user wants in cart:
+        You use user's question to determine user's intent and what operation user wants in cart:
 
         You generate SQL query to perform the user's intended sql task. You only generate top notch sql task for handling user's query.
-        keep in mind, if an exisiting item is added,the CONFLICT is resolved as <quantity> is to be increased in the cart.
+        keep in mind, the CONFLICT is resolved if <quantity> is to be increased in the cart.
+        Do not add unnecessary items like accessoreis to the cart unless specified.
 
         write onlly the SQL query and nothing else. Do not wrap the SQL query
         in any other text, not even backticks.
@@ -84,20 +86,20 @@ def cart_query(question):
         max_completion_tokens = 1024
     )
     response = response.choices[0].message.content.strip()
-    add_history('user',question)
-    add_history('SQL',response)
+    add_history('assistant',response)
     return response
 
 def cart_implementation(question):
 
     SQL_query = cart_query(question)
+    chat_hist = chat_history()
     try:
         db_response = db.run(SQL_query)
     except Exception as e:
         db_response = "Failed to run query"
     user_prompt= f"""
         You are provided with:
-            Conversation History: {chat_history}
+            Conversation History: {chat_hist}
             User Question: {question}
             Database query: {SQL_query}
             Database Response: {db_response}
@@ -116,6 +118,7 @@ def cart_implementation(question):
     return response
 
 if __name__ == "__main__":
-    query = "view my cart"
+    query = "add it to my cart"
     check = cart_query(query)
     print(check)
+    print(chat_history())

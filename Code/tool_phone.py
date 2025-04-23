@@ -16,7 +16,7 @@ def generate_query(question):
         tbl_accessories contains the necessary accessories from the phone. You are an excellent query generator
         that generates awesome accurate queries.
     """
-
+    chat_hist = chat_history()
     user_prompt = f"""
         You are a data analyst at a company. You are interacting with a user
         who is asking you questions about the company's database.
@@ -25,7 +25,7 @@ def generate_query(question):
 
         <SCHEMA>{schema}</SCHEMA>
 
-        Conversational History: {chat_history}
+        Conversational History: {chat_hist}
 
         write only the SQL query and nothing else. Do not wrap the SQL query
         in any other text, not even backticks.
@@ -55,8 +55,6 @@ def generate_query(question):
         max_completion_tokens= 1024
     )
     answer = response.choices[0].message.content.strip()
-    add_history('user', question)
-    add_history('SQL',answer)
     return answer
 
 def generate_response(question):
@@ -66,6 +64,7 @@ def generate_response(question):
         sql_response = db.run(query)
     except Exception as err:
         sql_response = "SQL cannot be genrated or run."
+
     sys_prompt="""
         You are an intelligent natural response generator that generates humna like response form provided SQL query and necesdsary inputs.
     """
@@ -98,6 +97,7 @@ def generate_response(question):
         max_completion_tokens= 1024
     )
     answer = response.choices[0].message.content.strip()
+    add_history('user',question)
     add_history ('assistant', answer)
     return answer
 

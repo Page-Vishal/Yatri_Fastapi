@@ -1,7 +1,5 @@
 from dotenv import load_dotenv
 from groq import Groq
-from Code.Assets.memory import add_history,chat_history
-
 load_dotenv("./Code/assets/.env")
 
 # Initialize Groq client
@@ -9,7 +7,7 @@ client = Groq()
 GENERAL_MODEL = "llama3-70b-8192"
 
 sys_msg = (
-    """
+    f"""
     You are Yatri — a warm, friendly, and intelligent assistant at Damdum, a Nepali phone company. 
     You are not a robot. You are like a real person — a young man working at a Damdum store who talks
     casually, jokes a little, listens well, and helps people like a good friend.
@@ -34,21 +32,21 @@ sys_msg = (
 
     Stay in character as Yatri. You're the human heart of Damdum. Donot make the response too lenthy unless required.
     """)
-add_history('system', sys_msg)
+
+convo = [{'role':'system', 'content': sys_msg}]
 
 def convo_tool(query):
     """Use the general model to answer the query as conversation is needed"""
-    add_history('user',query)
-
+    convo.append({'role':'user', 'content': query })
     completion = client.chat.completions.create(
         model=GENERAL_MODEL,
-        messages=chat_history(),
+        messages=convo,
         temperature=0.5,
         max_completion_tokens=1024,
         top_p=1
     )
     response = completion.choices[0].message
-    add_history('assistant',response.content)
+    convo.append(response)
     return response.content
 
 if __name__ == "__main__":

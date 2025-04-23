@@ -50,9 +50,7 @@ class queryRequest(BaseModel):
 ➤ messageResponse (Response Model)
 ```python
 class messageResponse(BaseModel):
-    query: str
-    route: str
-    response: str
+    message: str
 ```
 ---
 ## 📦 Requirements

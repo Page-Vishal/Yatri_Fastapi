@@ -33,6 +33,9 @@ def route_query(query):
     User: "Hey Yatri, what's up?"
     → TOOL: CONVERSATION
 
+    User: "I would like to buy a phone?"
+    → TOOL: Conversation
+
     User: "Can you suggest a phone with a good camera?"
     → TOOL: SQL
 
@@ -73,7 +76,7 @@ def process_query(query:str):
         response = security_process_query(query)
         if response in ["TOOL: phone", "TOOL: cart"] :
             response = db_tool(response,query)
-    elif routing_decision == "TOOL: Conversation":
+    if routing_decision == "TOOL: CONVERSATION":
         response = convo_tool(query)
     
     return {
