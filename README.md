@@ -67,6 +67,26 @@ requests
 pydantic
 
 ```
+## 🐳 Docker
+- Clone the repo [as usual]
+- put the .env at the working directory in the same format
+```
+GROQ_API_KEY='API_KEY'
+pgsql=postgresql://A:B@host.docker.internal:D/db_phone
+```
+---
+```
+docker build -t <name> .
+docker run --env-file .env -p 8000:8000 <name>
+```
+---
+OR 
+---
+use the docker-compose.yaml ,
+```
+docker compose up --build
+```
+➡️ http://localhost:8000/docs
 ---
 ## 📌 Notes
 - The Code/yatri.py file contains the process_query() function that powers the logic behind user queries.
