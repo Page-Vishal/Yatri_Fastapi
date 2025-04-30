@@ -1,6 +1,9 @@
 # Yatri FastAPI Server
 
 This is a FastAPI-powered backend for **Yatri**, a conversational agent designed to handle natural language queries and route them intelligently. The server is structured for easy development and testing.
+---
+The main yatri python code is available in repo: [Yatri](https://github.com/Page-Vishal/Yatri)
+---
 
 ---
 
